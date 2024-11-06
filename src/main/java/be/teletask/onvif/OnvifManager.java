@@ -1,82 +1,92 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package be.teletask.onvif;
 
-import be.teletask.onvif.listeners.*;
+import be.teletask.onvif.listeners.OnvifDeviceInformationListener;
+import be.teletask.onvif.listeners.OnvifMediaProfilesListener;
+import be.teletask.onvif.listeners.OnvifMediaStreamURIListener;
+import be.teletask.onvif.listeners.OnvifResponseListener;
+import be.teletask.onvif.listeners.OnvifServicesListener;
 import be.teletask.onvif.models.OnvifDevice;
 import be.teletask.onvif.models.OnvifMediaProfile;
-import be.teletask.onvif.requests.*;
+import be.teletask.onvif.requests.GetDeviceInformationRequest;
+import be.teletask.onvif.requests.GetMediaProfilesRequest;
+import be.teletask.onvif.requests.GetMediaStreamRequest;
+import be.teletask.onvif.requests.GetServicesRequest;
+import be.teletask.onvif.requests.OnvifRequest;
 import be.teletask.onvif.responses.OnvifResponse;
+import okhttp3.RequestBody;
 
-
-/**
- * Created by Tomas Verhelst on 03/09/2018.
- * Copyright (c) 2018 TELETASK BVBA. All rights reserved.
- */
 public class OnvifManager implements OnvifResponseListener {
-
-    //Constants
-    public final static String TAG = OnvifManager.class.getSimpleName();
-
-    //Attributes
+    public static final String TAG = OnvifManager.class.getSimpleName();
     private OnvifExecutor executor;
     private OnvifResponseListener onvifResponseListener;
 
-    //Constructors
     public OnvifManager() {
-        this(null);
+        this((OnvifResponseListener)null);
     }
 
     private OnvifManager(OnvifResponseListener onvifResponseListener) {
         this.onvifResponseListener = onvifResponseListener;
-        executor = new OnvifExecutor(this);
+        this.executor = new OnvifExecutor(this);
     }
 
-    //Methods
     public void getServices(OnvifDevice device, OnvifServicesListener listener) {
         OnvifRequest request = new GetServicesRequest(listener);
-        executor.sendRequest(device, request);
+        this.executor.sendRequest(device, request);
     }
 
     public void getDeviceInformation(OnvifDevice device, OnvifDeviceInformationListener listener) {
         OnvifRequest request = new GetDeviceInformationRequest(listener);
-        executor.sendRequest(device, request);
+        this.executor.sendRequest(device, request);
     }
 
     public void getMediaProfiles(OnvifDevice device, OnvifMediaProfilesListener listener) {
         OnvifRequest request = new GetMediaProfilesRequest(listener);
-        executor.sendRequest(device, request);
+        this.executor.sendRequest(device, request);
     }
 
     public void getMediaStreamURI(OnvifDevice device, OnvifMediaProfile profile, OnvifMediaStreamURIListener listener) {
         OnvifRequest request = new GetMediaStreamRequest(profile, listener);
-        executor.sendRequest(device, request);
+        this.executor.sendRequest(device, request);
     }
 
     public void sendOnvifRequest(OnvifDevice device, OnvifRequest request) {
-        executor.sendRequest(device, request);
+        this.executor.sendRequest(device, request);
+    }
+    public void sendMoveRequestAndBody(OnvifDevice device, OnvifRequest request,String profileToken, double panSpeed, double tiltSpeed, double zoomSpeed) {
+        this.executor.sendMoveRequestAndBody(device, request,profileToken,panSpeed,tiltSpeed,zoomSpeed);
+    }
+    public void sendStopRequest(OnvifDevice device, OnvifRequest request,String profileToken, Boolean panTilt, Boolean zoom) {
+        this.executor.sendStopRequest(device, request,profileToken,panTilt,zoom);
     }
 
+    public void sendPullMessageRequest(OnvifDevice device, OnvifRequest request,String subscriptionPolicyUrl,String timeout,int messageLimit ) {
+        this.executor.sendPullMessageRequest(device,request,subscriptionPolicyUrl,timeout,messageLimit);
+    }
     public void setOnvifResponseListener(OnvifResponseListener onvifResponseListener) {
         this.onvifResponseListener = onvifResponseListener;
     }
 
-    /**
-     * Clear up the resources.
-     */
     public void destroy() {
-        onvifResponseListener = null;
-        executor.clear();
+        this.onvifResponseListener = null;
+        this.executor.clear();
     }
 
-    @Override
     public void onResponse(OnvifDevice onvifDevice, OnvifResponse response) {
-        if (onvifResponseListener != null)
-            onvifResponseListener.onResponse(onvifDevice, response);
+        if (this.onvifResponseListener != null) {
+            this.onvifResponseListener.onResponse(onvifDevice, response);
+        }
+
     }
 
-    @Override
     public void onError(OnvifDevice onvifDevice, int errorCode, String errorMessage) {
-        if (onvifResponseListener != null)
-            onvifResponseListener.onError(onvifDevice, errorCode, errorMessage);
-    }
+        if (this.onvifResponseListener != null) {
+            this.onvifResponseListener.onError(onvifDevice, errorCode, errorMessage);
+        }
 
+    }
 }
