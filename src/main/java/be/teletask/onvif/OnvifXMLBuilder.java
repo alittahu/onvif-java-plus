@@ -85,6 +85,35 @@ public class OnvifXMLBuilder {
         return sb.toString();
     }
 
+    public static String getCreatePullPointSubscriptionBody(String filterExpression,String deviceIp) {
+        StringBuilder body = new StringBuilder();
+        body.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
+                .append("<s:Envelope xmlns:s=\"http://www.w3.org/2003/05/soap-envelope\" ")
+                .append("xmlns:a=\"http://www.w3.org/2005/08/addressing\">")
+                .append("<s:Header>")
+                .append("<a:Action s:mustUnderstand=\"1\">http://www.onvif.org/ver10/events/wsdl/EventPortType/CreatePullPointSubscriptionRequest</a:Action>")
+                .append("<a:MessageID>urn:uuid:53e84641-fd9b-411b-a349-ed2bd35cf59f</a:MessageID>")
+                .append("<a:ReplyTo><a:Address>http://www.w3.org/2005/08/addressing/anonymous</a:Address></a:ReplyTo>")
+                .append("<a:To s:mustUnderstand=\"1\">http://"+deviceIp+"/onvif/Events</a:To>")
+                .append("</s:Header>")
+                .append("<s:Body xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">")
+                .append("<CreatePullPointSubscription xmlns=\"http://www.onvif.org/ver10/events/wsdl\">")
+                .append("<Filter>")
+                .append("<wsnt:TopicExpression Dialect=\"http://www.onvif.org/ver10/tev/topicExpression/ConcreteSet\" ")
+                .append("xmlns:wsnt=\"http://docs.oasis-open.org/wsn/b-2\" ")
+                .append("xmlns:tns1=\"http://www.onvif.org/ver10/topics\" ")
+                .append("xmlns:yy=\"http://custom/topics\" ")
+                .append("xmlns:tt=\"http://www.onvif.org/ver10/schema\">")
+                .append(filterExpression)
+                .append("</wsnt:TopicExpression>")
+                .append("</Filter>")
+                .append("</CreatePullPointSubscription>")
+                .append("</s:Body>")
+                .append("</s:Envelope>");
+
+        return body.toString();
+    }
+
 
 
 }

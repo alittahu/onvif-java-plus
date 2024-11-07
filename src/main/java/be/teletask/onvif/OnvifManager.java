@@ -26,7 +26,7 @@ public class OnvifManager implements OnvifResponseListener {
     private OnvifResponseListener onvifResponseListener;
 
     public OnvifManager() {
-        this((OnvifResponseListener)null);
+        this((OnvifResponseListener) null);
     }
 
     private OnvifManager(OnvifResponseListener onvifResponseListener) {
@@ -57,16 +57,23 @@ public class OnvifManager implements OnvifResponseListener {
     public void sendOnvifRequest(OnvifDevice device, OnvifRequest request) {
         this.executor.sendRequest(device, request);
     }
-    public void sendMoveRequestAndBody(OnvifDevice device, OnvifRequest request,String profileToken, double panSpeed, double tiltSpeed, double zoomSpeed) {
-        this.executor.sendMoveRequestAndBody(device, request,profileToken,panSpeed,tiltSpeed,zoomSpeed);
-    }
-    public void sendStopRequest(OnvifDevice device, OnvifRequest request,String profileToken, Boolean panTilt, Boolean zoom) {
-        this.executor.sendStopRequest(device, request,profileToken,panTilt,zoom);
+
+    public void sendMoveRequestAndBody(OnvifDevice device, OnvifRequest request, String profileToken, double panSpeed, double tiltSpeed, double zoomSpeed) {
+        this.executor.sendMoveRequestAndBody(device, request, profileToken, panSpeed, tiltSpeed, zoomSpeed);
     }
 
-    public void sendPullMessageRequest(OnvifDevice device, OnvifRequest request,String subscriptionPolicyUrl,String timeout,int messageLimit ) {
-        this.executor.sendPullMessageRequest(device,request,subscriptionPolicyUrl,timeout,messageLimit);
+    public void sendStopRequest(OnvifDevice device, OnvifRequest request, String profileToken, Boolean panTilt, Boolean zoom) {
+        this.executor.sendStopRequest(device, request, profileToken, panTilt, zoom);
     }
+
+    public OnvifResponse sendCreatePullPointSubscription(OnvifDevice device, OnvifRequest request, String filterExpression) {
+        return this.executor.sendCreatePullPointSubscription(device, request, filterExpression);
+    }
+
+    public void sendPullMessageRequest(OnvifDevice device, OnvifRequest request, String subscriptionPolicyUrl, String timeout, int messageLimit) {
+        this.executor.sendPullMessageRequest(device, request, subscriptionPolicyUrl, timeout, messageLimit);
+    }
+
     public void setOnvifResponseListener(OnvifResponseListener onvifResponseListener) {
         this.onvifResponseListener = onvifResponseListener;
     }
