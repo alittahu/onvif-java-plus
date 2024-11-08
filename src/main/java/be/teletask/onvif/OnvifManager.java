@@ -10,6 +10,7 @@ import be.teletask.onvif.listeners.OnvifMediaProfilesListener;
 import be.teletask.onvif.listeners.OnvifMediaStreamURIListener;
 import be.teletask.onvif.listeners.OnvifResponseListener;
 import be.teletask.onvif.listeners.OnvifServicesListener;
+import be.teletask.onvif.models.OnvifCreatePullPointSubscription;
 import be.teletask.onvif.models.OnvifDevice;
 import be.teletask.onvif.models.OnvifMediaProfile;
 import be.teletask.onvif.requests.GetDeviceInformationRequest;
@@ -18,7 +19,16 @@ import be.teletask.onvif.requests.GetMediaStreamRequest;
 import be.teletask.onvif.requests.GetServicesRequest;
 import be.teletask.onvif.requests.OnvifRequest;
 import be.teletask.onvif.responses.OnvifResponse;
-import okhttp3.RequestBody;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class OnvifManager implements OnvifResponseListener {
     public static final String TAG = OnvifManager.class.getSimpleName();
@@ -66,12 +76,45 @@ public class OnvifManager implements OnvifResponseListener {
         this.executor.sendStopRequest(device, request, profileToken, panTilt, zoom);
     }
 
-    public OnvifResponse sendCreatePullPointSubscription(OnvifDevice device, OnvifRequest request, String filterExpression) {
-        return this.executor.sendCreatePullPointSubscription(device, request, filterExpression);
+    public OnvifCreatePullPointSubscription sendCreatePullPointSubscription(OnvifDevice device, OnvifRequest request, String filterExpression) throws Exception {
+        OnvifCreatePullPointSubscription onvifCreatePullPointSubscription = new OnvifCreatePullPointSubscription();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true); // 使其支持命名空间
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        OnvifResponse onvifResponse = this.executor.sendCreatePullPointSubscription(device, request, filterExpression);
+
+        if (Objects.nonNull(onvifResponse) && onvifResponse.getErrorCode() == 0) {
+            Document document = builder.parse(new java.io.ByteArrayInputStream(onvifResponse.getXml().getBytes(StandardCharsets.UTF_8)));
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX");
+            // 使用命名空间来获取 Address 元素
+            NodeList nodeList = document.getElementsByTagNameNS("http://www.w3.org/2005/08/addressing", "Address");
+            if (nodeList.getLength() > 0) {
+                Element addressElement = (Element) nodeList.item(0);
+                String address = addressElement.getTextContent();
+                onvifCreatePullPointSubscription.setSubscriptionReference(address);
+            }
+            nodeList = document.getElementsByTagNameNS("http://docs.oasis-open.org/wsn/b-2", "CurrentTime");
+            if (nodeList.getLength() > 0) {
+                Element currentTimeElement = (Element) nodeList.item(0);
+                String currentTime = currentTimeElement.getTextContent();
+                onvifCreatePullPointSubscription.setCurrentTime(LocalDateTime.parse(currentTime, dateTimeFormatter));
+            }
+            nodeList = document.getElementsByTagNameNS("http://docs.oasis-open.org/wsn/b-2", "TerminationTime");
+            if (nodeList.getLength() > 0) {
+                Element terminationTimeElement = (Element) nodeList.item(0);
+                String terminationTime = terminationTimeElement.getTextContent();
+                onvifCreatePullPointSubscription.setTerminationTime(LocalDateTime.parse(terminationTime, dateTimeFormatter));
+            }
+        }
+        return onvifCreatePullPointSubscription;
     }
 
     public void sendPullMessageRequest(OnvifDevice device, OnvifRequest request, String subscriptionPolicyUrl, String timeout, int messageLimit) {
         this.executor.sendPullMessageRequest(device, request, subscriptionPolicyUrl, timeout, messageLimit);
+    }
+
+    public OnvifResponse sendUnsubscribeRequest(OnvifDevice device, OnvifRequest request, String subscriptionPolicyUrl) {
+        return this.executor.sendUnsubscribeRequest(device, request, subscriptionPolicyUrl);
     }
 
     public void setOnvifResponseListener(OnvifResponseListener onvifResponseListener) {

@@ -5,6 +5,8 @@
 
 package be.teletask.onvif;
 
+import java.util.UUID;
+
 public class OnvifXMLBuilder {
     public static final String TAG = OnvifXMLBuilder.class.getSimpleName();
 
@@ -85,16 +87,15 @@ public class OnvifXMLBuilder {
         return sb.toString();
     }
 
-    public static String getCreatePullPointSubscriptionBody(String filterExpression,String deviceIp) {
+    public static String getCreatePullPointSubscriptionBody(String filterExpression,String subscriptionPolicyUrl) {
         StringBuilder body = new StringBuilder();
         body.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
                 .append("<s:Envelope xmlns:s=\"http://www.w3.org/2003/05/soap-envelope\" ")
                 .append("xmlns:a=\"http://www.w3.org/2005/08/addressing\">")
                 .append("<s:Header>")
                 .append("<a:Action s:mustUnderstand=\"1\">http://www.onvif.org/ver10/events/wsdl/EventPortType/CreatePullPointSubscriptionRequest</a:Action>")
-                .append("<a:MessageID>urn:uuid:53e84641-fd9b-411b-a349-ed2bd35cf59f</a:MessageID>")
                 .append("<a:ReplyTo><a:Address>http://www.w3.org/2005/08/addressing/anonymous</a:Address></a:ReplyTo>")
-                .append("<a:To s:mustUnderstand=\"1\">http://"+deviceIp+"/onvif/Events</a:To>")
+                .append("<a:To s:mustUnderstand=\"1\">"+subscriptionPolicyUrl+"</a:To>")
                 .append("</s:Header>")
                 .append("<s:Body xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">")
                 .append("<CreatePullPointSubscription xmlns=\"http://www.onvif.org/ver10/events/wsdl\">")
@@ -112,6 +113,26 @@ public class OnvifXMLBuilder {
                 .append("</s:Envelope>");
 
         return body.toString();
+    }
+
+    public static String getUnsubscribeBody(String subscriptionPolicyUrl) {
+        String messageID= UUID.randomUUID().toString();
+        return "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                "<s:Envelope xmlns:s=\"http://www.w3.org/2003/05/soap-envelope\" " +
+                "xmlns:a=\"http://www.w3.org/2005/08/addressing\">" +
+                "<s:Header>" +
+                "<a:Action s:mustUnderstand=\"1\">http://docs.oasis-open.org/wsn/bw-2/SubscriptionManager/UnsubscribeRequest</a:Action>" +
+                "<a:MessageID>urn:uuid:" + messageID + "</a:MessageID>" +
+                "<a:ReplyTo>" +
+                "<a:Address>http://www.w3.org/2005/08/addressing/anonymous</a:Address>" +
+                "</a:ReplyTo>" +
+                "<a:To s:mustUnderstand=\"1\">" + subscriptionPolicyUrl + "</a:To>" +
+                "</s:Header>" +
+                "<s:Body xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+                "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">" +
+                "<Unsubscribe xmlns=\"http://docs.oasis-open.org/wsn/b-2\" />" +
+                "</s:Body>" +
+                "</s:Envelope>";
     }
 
 

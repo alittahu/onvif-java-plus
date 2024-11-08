@@ -1,12 +1,13 @@
 package be.teletask.onvif.responses;
 
+import be.teletask.onvif.models.OnvifType;
 import be.teletask.onvif.requests.OnvifRequest;
 
 /**
  * Created by Tomas Verhelst on 03/09/2018.
  * Copyright (c) 2018 TELETASK BVBA. All rights reserved.
  */
-public class OnvifResponse<T> {
+public class OnvifResponse {
 
     //Constants
     public static final String TAG = OnvifResponse.class.getSimpleName();
@@ -64,5 +65,9 @@ public class OnvifResponse<T> {
 
     public OnvifRequest request() {
         return onvifRequest;
+    }
+
+    public OnvifType getRequestType() {
+        return this.onvifRequest.getType();
     }
 }

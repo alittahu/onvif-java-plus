@@ -83,6 +83,12 @@ public class OnvifExecutor {
         this.reqBody = RequestBody.create(this.reqBodyType, OnvifXMLBuilder.getPullMessagesBody(timeout, messageLimit));
         this.performXmlRequest(device, request, this.buildOnvifPullMessageRequest(subscriptionPolicyUrl));
     }
+    OnvifResponse sendUnsubscribeRequest(OnvifDevice device, OnvifRequest request, String subscriptionPolicyUrl) {
+        this.credentials.setUserName(device.getUsername());
+        this.credentials.setPassword(device.getPassword());
+        this.reqBody = RequestBody.create(this.reqBodyType, OnvifXMLBuilder.getUnsubscribeBody(subscriptionPolicyUrl));
+       return this.performXmlRequestSynchronous(device, request, this.buildOnvifPullMessageRequest(subscriptionPolicyUrl));
+    }
 
     OnvifResponse sendCreatePullPointSubscription(OnvifDevice device, OnvifRequest request, String filterExpression) {
         this.credentials.setUserName(device.getUsername());
@@ -210,9 +216,9 @@ public class OnvifExecutor {
                 return device.getPath().getProfilesPath();
             case GET_STREAM_URI:
                 return device.getPath().getStreamURIPath();
-            case GET_Recoding_URI:
+            case GET_RECORD_URI:
                 return "/onvif/recording_service";
-            case GET_Repaly_URI:
+            case GET_REPLAY_URI:
                 return "/onvif/replay_service";
             case GET_PTZ_URI:
                 return "/onvif/ptz_service";
