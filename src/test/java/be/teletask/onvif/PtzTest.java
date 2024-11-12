@@ -72,9 +72,7 @@ public class PtzTest {
         List<OnvifMediaProfile> mediaProfiles = ONVIF_MANGER.getMediaProfiles(ONVIF_DEVICE);
         String token = mediaProfiles.get(0).getToken();
         ONVIF_MANGER.sendMoveRequestAndBody(ONVIF_DEVICE,token,0,0,1);
-        while (true){
-            Thread.sleep(2);
+            Thread.sleep(10);
             ONVIF_MANGER.sendStopRequest(ONVIF_DEVICE,token,true,true);
-        }
     }
 }
