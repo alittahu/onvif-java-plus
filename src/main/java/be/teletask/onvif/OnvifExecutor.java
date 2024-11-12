@@ -7,13 +7,12 @@ package be.teletask.onvif;
 
 import be.teletask.onvif.listeners.OnvifResponseListener;
 import be.teletask.onvif.models.OnvifDevice;
+import be.teletask.onvif.models.OnvifMediaProfile;
 import be.teletask.onvif.models.OnvifServices;
 import be.teletask.onvif.parsers.GetDeviceInformationParser;
-import be.teletask.onvif.parsers.GetMediaProfilesParser;
 import be.teletask.onvif.parsers.GetMediaStreamParser;
 import be.teletask.onvif.parsers.GetServicesParser;
 import be.teletask.onvif.requests.GetDeviceInformationRequest;
-import be.teletask.onvif.requests.GetMediaProfilesRequest;
 import be.teletask.onvif.requests.GetMediaStreamRequest;
 import be.teletask.onvif.requests.GetServicesRequest;
 import be.teletask.onvif.requests.OnvifRequest;
@@ -25,6 +24,9 @@ import com.burgstaller.okhttp.digest.Credentials;
 import com.burgstaller.okhttp.digest.DigestAuthenticator;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +40,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 public class OnvifExecutor {
     public static final String TAG = OnvifExecutor.class.getSimpleName();
@@ -63,6 +68,70 @@ public class OnvifExecutor {
         this.performXmlRequest(device, request, this.buildOnvifRequest(device, request));
     }
 
+    List<OnvifMediaProfile> sendProfileRequest(OnvifDevice device, OnvifRequest request) throws Exception {
+        this.credentials.setUserName(device.getUsername());
+        this.credentials.setPassword(device.getPassword());
+        this.reqBody = RequestBody.create(this.reqBodyType, OnvifXMLBuilder.getSoapHeader() + request.getXml() + OnvifXMLBuilder.getEnvelopeEnd());
+        return   this.performXmlProfileRequest(device, request, this.buildOnvifRequest(device, request));
+    }
+
+    private List<OnvifMediaProfile> performXmlProfileRequest(OnvifDevice device, OnvifRequest request, Request xmlRequest) throws Exception {
+        OnvifResponse onvifResponse = new OnvifResponse(request);
+        if (xmlRequest != null) {
+            try (Response response = this.client.newCall(xmlRequest).execute()) {
+                if (response.isSuccessful()) {
+                    onvifResponse.setSuccess(true);
+
+                    ResponseBody body = response.body();
+                    if (body != null) {
+                        // 将响应的 XML 内容设置到 OnvifResponse 中
+                        onvifResponse.setXml(body.string());
+                    } else {
+                        onvifResponse.setErrorCode(response.code());
+                        onvifResponse.setErrorMessage("Response body is empty.");
+                    }
+
+                }
+            }
+        }
+
+        return parse(onvifResponse);
+    }
+
+    private static final String KEY_PROFILES = "Profiles";
+    private static final String ATTR_TOKEN = "token";
+    private static final String ATTR_NAME = "Name";
+
+    public List<OnvifMediaProfile> parse(OnvifResponse response) throws Exception {
+        List<OnvifMediaProfile> profiles = new ArrayList<>();
+        XmlPullParserFactory xmlFactory = XmlPullParserFactory.newInstance();
+        xmlFactory.setNamespaceAware(true);
+        XmlPullParser xpp = xmlFactory.newPullParser();
+        int eventType = 0;
+        try {
+            xpp.setInput(new StringReader(response.getXml()));
+            eventType = xpp.getEventType();
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+
+                if (eventType == XmlPullParser.START_TAG && xpp.getName().equals(KEY_PROFILES)) {
+
+                    String token = xpp.getAttributeValue(null, ATTR_TOKEN);
+                    xpp.nextTag();
+                    if (xpp.getName().equals(ATTR_NAME)) {
+                        xpp.next();
+                        String name = xpp.getText();
+                        profiles.add(new OnvifMediaProfile(name, token));
+                    }
+                }
+                eventType = xpp.next();
+            }
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return profiles;
+    }
+
     void sendMoveRequestAndBody(OnvifDevice device, OnvifRequest request, String profileToken, double panSpeed, double tiltSpeed, double zoomSpeed) {
         this.credentials.setUserName(device.getUsername());
         this.credentials.setPassword(device.getPassword());
@@ -83,11 +152,12 @@ public class OnvifExecutor {
         this.reqBody = RequestBody.create(this.reqBodyType, OnvifXMLBuilder.getPullMessagesBody(timeout, messageLimit));
         this.performXmlRequest(device, request, this.buildOnvifPullMessageRequest(subscriptionPolicyUrl));
     }
+
     OnvifResponse sendUnsubscribeRequest(OnvifDevice device, OnvifRequest request, String subscriptionPolicyUrl) {
         this.credentials.setUserName(device.getUsername());
         this.credentials.setPassword(device.getPassword());
         this.reqBody = RequestBody.create(this.reqBodyType, OnvifXMLBuilder.getUnsubscribeBody(subscriptionPolicyUrl));
-       return this.performXmlRequestSynchronous(device, request, this.buildOnvifPullMessageRequest(subscriptionPolicyUrl));
+        return this.performXmlRequestSynchronous(device, request, this.buildOnvifPullMessageRequest(subscriptionPolicyUrl));
     }
 
     OnvifResponse sendCreatePullPointSubscription(OnvifDevice device, OnvifRequest request, String filterExpression) {
@@ -181,9 +251,9 @@ public class OnvifExecutor {
             case GET_DEVICE_INFORMATION:
                 ((GetDeviceInformationRequest) response.request()).getListener().onDeviceInformationReceived(device, (new GetDeviceInformationParser()).parse(response));
                 break;
-            case GET_MEDIA_PROFILES:
-                ((GetMediaProfilesRequest) response.request()).getListener().onMediaProfilesReceived(device, (new GetMediaProfilesParser()).parse(response));
-                break;
+//            case GET_MEDIA_PROFILES:
+//                ((GetMediaProfilesRequest) response.request()).getListener().onMediaProfilesReceived(device, (new GetMediaProfilesParser()).parse(response));
+//                break;
             case GET_STREAM_URI:
                 GetMediaStreamRequest streamRequest = (GetMediaStreamRequest) response.request();
                 streamRequest.getListener().onMediaStreamURIReceived(device, streamRequest.getMediaProfile(), (new GetMediaStreamParser()).parse(response));

@@ -1,6 +1,5 @@
 package be.teletask.onvif.requests;
 
-import be.teletask.onvif.listeners.OnvifMediaProfilesListener;
 import be.teletask.onvif.models.OnvifType;
 
 
@@ -12,21 +11,6 @@ public class GetMediaProfilesRequest implements OnvifRequest {
 
     //Constants
     public static final String TAG = GetMediaProfilesRequest.class.getSimpleName();
-
-    //Attributes
-    private final OnvifMediaProfilesListener listener;
-
-    //Constructors
-    public GetMediaProfilesRequest(OnvifMediaProfilesListener listener) {
-        super();
-        this.listener = listener;
-    }
-
-    //Properties
-
-    public OnvifMediaProfilesListener getListener() {
-        return listener;
-    }
 
     @Override
     public String getXml() {

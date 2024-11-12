@@ -6,18 +6,13 @@
 package be.teletask.onvif;
 
 import be.teletask.onvif.listeners.OnvifDeviceInformationListener;
-import be.teletask.onvif.listeners.OnvifMediaProfilesListener;
 import be.teletask.onvif.listeners.OnvifMediaStreamURIListener;
 import be.teletask.onvif.listeners.OnvifResponseListener;
 import be.teletask.onvif.listeners.OnvifServicesListener;
 import be.teletask.onvif.models.OnvifCreatePullPointSubscription;
 import be.teletask.onvif.models.OnvifDevice;
 import be.teletask.onvif.models.OnvifMediaProfile;
-import be.teletask.onvif.requests.GetDeviceInformationRequest;
-import be.teletask.onvif.requests.GetMediaProfilesRequest;
-import be.teletask.onvif.requests.GetMediaStreamRequest;
-import be.teletask.onvif.requests.GetServicesRequest;
-import be.teletask.onvif.requests.OnvifRequest;
+import be.teletask.onvif.requests.*;
 import be.teletask.onvif.responses.OnvifResponse;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,6 +23,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 public class OnvifManager implements OnvifResponseListener {
@@ -54,9 +50,8 @@ public class OnvifManager implements OnvifResponseListener {
         this.executor.sendRequest(device, request);
     }
 
-    public void getMediaProfiles(OnvifDevice device, OnvifMediaProfilesListener listener) {
-        OnvifRequest request = new GetMediaProfilesRequest(listener);
-        this.executor.sendRequest(device, request);
+    public List<OnvifMediaProfile> getMediaProfiles(OnvifDevice device) throws Exception {
+        return this.executor.sendProfileRequest(device, new GetMediaProfilesRequest());
     }
 
     public void getMediaStreamURI(OnvifDevice device, OnvifMediaProfile profile, OnvifMediaStreamURIListener listener) {
@@ -68,12 +63,29 @@ public class OnvifManager implements OnvifResponseListener {
         this.executor.sendRequest(device, request);
     }
 
-    public void sendMoveRequestAndBody(OnvifDevice device, OnvifRequest request, String profileToken, double panSpeed, double tiltSpeed, double zoomSpeed) {
-        this.executor.sendMoveRequestAndBody(device, request, profileToken, panSpeed, tiltSpeed, zoomSpeed);
+    /**
+     * 云台持续运动
+     *
+     * @param device       onvif设备
+     * @param profileToken mediaProfileToken
+     * @param panSpeed     x坐标移动速度
+     * @param tiltSpeed    Y坐标移动速度
+     * @param zoomSpeed    镜头拉近速度
+     */
+    public void sendMoveRequestAndBody(OnvifDevice device, String profileToken, double panSpeed, double tiltSpeed, double zoomSpeed) {
+        this.executor.sendMoveRequestAndBody(device,GetPTZContinuousMoveRequest.getInstance(), profileToken, panSpeed, tiltSpeed, zoomSpeed);
     }
 
-    public void sendStopRequest(OnvifDevice device, OnvifRequest request, String profileToken, Boolean panTilt, Boolean zoom) {
-        this.executor.sendStopRequest(device, request, profileToken, panTilt, zoom);
+    /**
+     * 云台停止
+     *
+     * @param device       onvif设备
+     * @param profileToken mediaProfileToken
+     * @param panTilt      是否立即停止xy坐标的运动
+     * @param zoom         是否立即停止镜头运动
+     */
+    public void sendStopRequest(OnvifDevice device, String profileToken, Boolean panTilt, Boolean zoom) {
+        this.executor.sendStopRequest(device, GetPTZStopRequest.getInstance(), profileToken, panTilt, zoom);
     }
 
     public OnvifCreatePullPointSubscription sendCreatePullPointSubscription(OnvifDevice device, OnvifRequest request, String filterExpression) throws Exception {
