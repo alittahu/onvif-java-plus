@@ -6,7 +6,8 @@
 package be.teletask.onvif;
 
 import java.util.UUID;
-
+// Modified by Boj on 20241103
+// This file includes modifications based on the original project ONVIF-java.
 public class OnvifXMLBuilder {
     public static final String TAG = OnvifXMLBuilder.class.getSimpleName();
 

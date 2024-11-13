@@ -43,7 +43,8 @@ import okio.Buffer;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
-
+// Modified by Boj on 20241103
+// This file includes modifications based on the original project ONVIF-java.
 public class OnvifExecutor {
     public static final String TAG = OnvifExecutor.class.getSimpleName();
     private OkHttpClient client;

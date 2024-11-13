@@ -25,7 +25,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-
+// Modified by Boj on 20241103
+// This file includes modifications based on the original project ONVIF-java.
 public class OnvifManager implements OnvifResponseListener {
     public static final String TAG = OnvifManager.class.getSimpleName();
     private OnvifExecutor executor;

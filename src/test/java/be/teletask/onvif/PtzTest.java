@@ -38,19 +38,8 @@ public class PtzTest {
                 System.out.println("onvifResponse = " + onvifResponse.getXml());
                 OnvifType requestType = onvifResponse.getRequestType();
                 switch (requestType) {
-                    case GET_EVENTS_PULL_MESSAGE_URI:
-                        // 此处获取了本次事件的所有data数据标签下的所有值
-                        Map<String, String> pullMessageValues = OnvifResponsesAnalyzeUtils.getPullMessageValues(onvifResponse.getXml());
-
-                        String isMotion = pullMessageValues.get("IsMotion");
-                        if (Boolean.parseBoolean(isMotion)) {
-                            System.out.println("\n有人经过");
-                        } else {
-                            System.out.println("\n无人经过");
-                        }
-                        break;
-                    case GET_EVENTS_URI:
-                        System.out.println("onvifResponse = " + onvifResponse.getXml());
+                    case GET_PTZ_URI:
+                        System.out.println("云台移动成功");
                         break;
                     default:
                         System.out.println("onvifResponse = " + onvifResponse.getXml());
@@ -71,8 +60,8 @@ public class PtzTest {
     public void ptzMove() throws Exception {
         List<OnvifMediaProfile> mediaProfiles = ONVIF_MANGER.getMediaProfiles(ONVIF_DEVICE);
         String token = mediaProfiles.get(0).getToken();
-        ONVIF_MANGER.sendMoveRequestAndBody(ONVIF_DEVICE,token,0,0,1);
-            Thread.sleep(10);
-            ONVIF_MANGER.sendStopRequest(ONVIF_DEVICE,token,true,true);
+        ONVIF_MANGER.sendMoveRequestAndBody(ONVIF_DEVICE, token, 0, 0, 1);
+        Thread.sleep(10);
+        ONVIF_MANGER.sendStopRequest(ONVIF_DEVICE, token, true, true);
     }
 }

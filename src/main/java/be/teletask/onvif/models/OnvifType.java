@@ -4,7 +4,8 @@
 //
 
 package be.teletask.onvif.models;
-
+// Modified by Boj on 20241103
+// This file includes modifications based on the original project ONVIF-java.
 public enum OnvifType {
     CUSTOM(""),
     GET_SERVICES("http://www.onvif.org/ver10/device/wsdl"),

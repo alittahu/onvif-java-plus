@@ -2,6 +2,8 @@ package be.teletask.onvif.requests;
 
 import be.teletask.onvif.models.OnvifType;
 
+// Modified by Boj on 20241103
+// This file includes modifications based on the original project ONVIF-java.
 
 /**
  * Created by Tomas Verhelst on 04/09/2018.
