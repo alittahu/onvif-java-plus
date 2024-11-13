@@ -6,10 +6,8 @@ public class GetPTZStopRequest implements OnvifRequest {
 
     private static GetPTZStopRequest instance;
 
-    // 私有构造方法，防止外部实例化
     private GetPTZStopRequest() {}
 
-    // 提供线程安全的 getInstance 方法
     public static synchronized GetPTZStopRequest getInstance() {
         if (instance == null) {
             instance = new GetPTZStopRequest();

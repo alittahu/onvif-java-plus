@@ -77,12 +77,12 @@ public class EventTest {
     public void pullMessage() throws Exception {
         // 发起订阅拿到拉取对象，并指定订阅的事件topic
         OnvifCreatePullPointSubscription onvifCreatePullPointSubscription = ONVIF_MANGER.sendCreatePullPointSubscription
-                (ONVIF_DEVICE, new GetEventsCreatePullPointSubscriptionRequest(), "tns1:RuleEngine/CellMotionDetector/Motion");
+                (ONVIF_DEVICE, GetEventsCreatePullPointSubscriptionRequest.getInstance(), "tns1:RuleEngine/CellMotionDetector/Motion");
         if (Objects.nonNull(onvifCreatePullPointSubscription)) {
             String subscriptionReference = onvifCreatePullPointSubscription.getSubscriptionReference();
             while (true) {
                 // 发送拉取api拉取十秒内的10条时间信息
-                ONVIF_MANGER.sendPullMessageRequest(ONVIF_DEVICE, new GetEventsPullMessageRequest(), subscriptionReference, "PT100S", 10);
+                ONVIF_MANGER.sendPullMessageRequest(ONVIF_DEVICE, subscriptionReference, "PT100S", 10);
             }
         }
     }
@@ -92,7 +92,7 @@ public class EventTest {
      */
     @Test
     public void unsubscribe(){
-        OnvifResponse onvifResponse = ONVIF_MANGER.sendUnsubscribeRequest(ONVIF_DEVICE, new GetEventsUnsubscribeRequest(), "http://192.168.0.136/onvif/Events/PullSubManager_20241108T074250Z_2");
+        OnvifResponse onvifResponse = ONVIF_MANGER.sendUnsubscribeRequest(ONVIF_DEVICE, "http://192.168.0.136/onvif/Events/PullSubManager_20241108T074250Z_2");
         System.out.println("onvifResponse.getXml() = " + onvifResponse.getXml());
     }
 

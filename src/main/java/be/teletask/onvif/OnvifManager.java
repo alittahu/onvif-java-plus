@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+
 // Modified by Boj on 20241103
 // This file includes modifications based on the original project ONVIF-java.
 public class OnvifManager implements OnvifResponseListener {
@@ -74,7 +75,7 @@ public class OnvifManager implements OnvifResponseListener {
      * @param zoomSpeed    镜头拉近速度
      */
     public void sendMoveRequestAndBody(OnvifDevice device, String profileToken, double panSpeed, double tiltSpeed, double zoomSpeed) {
-        this.executor.sendMoveRequestAndBody(device,GetPTZContinuousMoveRequest.getInstance(), profileToken, panSpeed, tiltSpeed, zoomSpeed);
+        this.executor.sendMoveRequestAndBody(device, GetPTZContinuousMoveRequest.getInstance(), profileToken, panSpeed, tiltSpeed, zoomSpeed);
     }
 
     /**
@@ -92,7 +93,7 @@ public class OnvifManager implements OnvifResponseListener {
     public OnvifCreatePullPointSubscription sendCreatePullPointSubscription(OnvifDevice device, OnvifRequest request, String filterExpression) throws Exception {
         OnvifCreatePullPointSubscription onvifCreatePullPointSubscription = new OnvifCreatePullPointSubscription();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true); // 使其支持命名空间
+        factory.setNamespaceAware(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
         OnvifResponse onvifResponse = this.executor.sendCreatePullPointSubscription(device, request, filterExpression);
 
@@ -122,12 +123,12 @@ public class OnvifManager implements OnvifResponseListener {
         return onvifCreatePullPointSubscription;
     }
 
-    public void sendPullMessageRequest(OnvifDevice device, OnvifRequest request, String subscriptionPolicyUrl, String timeout, int messageLimit) {
-        this.executor.sendPullMessageRequest(device, request, subscriptionPolicyUrl, timeout, messageLimit);
+    public void sendPullMessageRequest(OnvifDevice device, String subscriptionPolicyUrl, String timeout, int messageLimit) {
+        this.executor.sendPullMessageRequest(device, GetEventsPullMessageRequest.getInstance(), subscriptionPolicyUrl, timeout, messageLimit);
     }
 
-    public OnvifResponse sendUnsubscribeRequest(OnvifDevice device, OnvifRequest request, String subscriptionPolicyUrl) {
-        return this.executor.sendUnsubscribeRequest(device, request, subscriptionPolicyUrl);
+    public OnvifResponse sendUnsubscribeRequest(OnvifDevice device, String subscriptionPolicyUrl) {
+        return this.executor.sendUnsubscribeRequest(device, GetEventsUnsubscribeRequest.getInstance(), subscriptionPolicyUrl);
     }
 
     public void setOnvifResponseListener(OnvifResponseListener onvifResponseListener) {

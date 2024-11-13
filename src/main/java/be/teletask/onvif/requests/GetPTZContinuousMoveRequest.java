@@ -6,10 +6,8 @@ import be.teletask.onvif.models.OnvifType;
 public class GetPTZContinuousMoveRequest implements OnvifRequest {
     private static GetPTZContinuousMoveRequest instance;
 
-    // 私有构造方法，防止外部实例化
     private GetPTZContinuousMoveRequest() {}
 
-    // 提供线程安全的 getInstance 方法
     public static synchronized GetPTZContinuousMoveRequest getInstance() {
         if (instance == null) {
             instance = new GetPTZContinuousMoveRequest();
