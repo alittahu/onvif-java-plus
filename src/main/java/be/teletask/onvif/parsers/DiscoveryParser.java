@@ -5,7 +5,6 @@ import be.teletask.onvif.OnvifUtils;
 import be.teletask.onvif.models.Device;
 import be.teletask.onvif.models.DiscoveryType;
 import be.teletask.onvif.models.OnvifDevice;
-import be.teletask.onvif.models.UPnPDevice;
 import be.teletask.onvif.responses.OnvifResponse;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -20,15 +19,14 @@ import java.util.List;
  * Created by Tomas Verhelst on 04/09/2018.
  * Copyright (c) 2018 TELETASK BVBA. All rights reserved.
  */
+
+// Modified by Boj on 20241103
+// This file includes modifications based on the original project ONVIF-java.
 public class DiscoveryParser extends OnvifParser<List<Device>> {
 
     //Constants
     public static final String TAG = DiscoveryParser.class.getSimpleName();
     private static final String LINE_END = "\r\n";
-    private static String KEY_UPNP_LOCATION = "LOCATION: ";
-    private static String KEY_UPNP_SERVER = "SERVER: ";
-    private static String KEY_UPNP_USN = "USN: ";
-    private static String KEY_UPNP_ST = "ST: ";
 
     //Attributes
     private DiscoveryMode mode;
@@ -51,7 +49,6 @@ public class DiscoveryParser extends OnvifParser<List<Device>> {
                 devices.addAll(parseOnvif(response));
                 break;
             case UPNP:
-                devices.add(parseUPnP(response));
                 break;
         }
 
@@ -84,14 +81,7 @@ public class DiscoveryParser extends OnvifParser<List<Device>> {
         return devices;
     }
 
-    private Device parseUPnP(OnvifResponse response) {
-        String header = response.getXml();
-        String location = parseUPnPHeader(header, KEY_UPNP_LOCATION);
-        String server = parseUPnPHeader(header, KEY_UPNP_SERVER);
-        String usn = parseUPnPHeader(header, KEY_UPNP_USN);
-        String st = parseUPnPHeader(header, KEY_UPNP_ST);
-        return new UPnPDevice(getHostName(), header, location, server, usn, st);
-    }
+
 
     //Properties
 
@@ -115,16 +105,6 @@ public class DiscoveryParser extends OnvifParser<List<Device>> {
         return devices;
     }
 
-    private String parseUPnPHeader(String header, String whatSearch) {
-        String result = "";
-        int searchLinePos = header.indexOf(whatSearch);
-        if (searchLinePos != -1) {
-            searchLinePos += whatSearch.length();
-            int locColon = header.indexOf(LINE_END, searchLinePos);
-            result = header.substring(searchLinePos, locColon);
-        }
-        return result;
-    }
 
 
 }
