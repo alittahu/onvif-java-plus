@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * @author BOj
- * @desc
+ * @desc Onvif云台操作的单元测试类
  * @since 11/12/2024  10:21 AM
  */
 
@@ -58,10 +58,15 @@ public class PtzTest {
 
     @Test
     public void ptzMove() throws Exception {
+        // 首先获取mediaProfiles文件
         List<OnvifMediaProfile> mediaProfiles = ONVIF_MANGER.getMediaProfiles(ONVIF_DEVICE);
+        // 具体取第几个配置文件根据实际情况决定
         String token = mediaProfiles.get(0).getToken();
+        // 进行云台的伸缩持续运动
         ONVIF_MANGER.sendMoveRequestAndBody(ONVIF_DEVICE, token, 0, 0, 1);
+        // 异步消息需要等待,不然直接程序走完销毁消息传达不到设备
         Thread.sleep(10);
+        // 停止
         ONVIF_MANGER.sendStopRequest(ONVIF_DEVICE, token, true, true);
     }
 }

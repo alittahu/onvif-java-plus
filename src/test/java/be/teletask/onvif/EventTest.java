@@ -81,7 +81,7 @@ public class EventTest {
         if (Objects.nonNull(onvifCreatePullPointSubscription)) {
             String subscriptionReference = onvifCreatePullPointSubscription.getSubscriptionReference();
             while (true) {
-                // 发送拉取api拉取十秒内的10条时间信息
+                // 发送拉取api拉取10秒内的10条信息
                 ONVIF_MANGER.sendPullMessageRequest(ONVIF_DEVICE, subscriptionReference, "PT100S", 10);
             }
         }

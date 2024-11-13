@@ -61,6 +61,7 @@ public class OnvifManager implements OnvifResponseListener {
         this.executor.sendRequest(device, request);
     }
 
+
     public void sendOnvifRequest(OnvifDevice device, OnvifRequest request) {
         this.executor.sendRequest(device, request);
     }
@@ -90,6 +91,14 @@ public class OnvifManager implements OnvifResponseListener {
         this.executor.sendStopRequest(device, GetPTZStopRequest.getInstance(), profileToken, panTilt, zoom);
     }
 
+    /**
+     * 发送创建拉取点订阅
+     * @param device onvif设备
+     * @param request 请求
+     * @param filterExpression 指定订阅的topic
+     * @return 拉取点类包含拉取点的相关对象
+     * @throws Exception 异常抛出给调用方
+     */
     public OnvifCreatePullPointSubscription sendCreatePullPointSubscription(OnvifDevice device, OnvifRequest request, String filterExpression) throws Exception {
         OnvifCreatePullPointSubscription onvifCreatePullPointSubscription = new OnvifCreatePullPointSubscription();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -123,10 +132,23 @@ public class OnvifManager implements OnvifResponseListener {
         return onvifCreatePullPointSubscription;
     }
 
+    /**
+     * 发送拉取消息的请求
+     * @param device onvif设备类
+     * @param subscriptionPolicyUrl 订阅点的url
+     * @param timeout 指定时间内的消息
+     * @param messageLimit 拉取消息得到条数
+     */
     public void sendPullMessageRequest(OnvifDevice device, String subscriptionPolicyUrl, String timeout, int messageLimit) {
         this.executor.sendPullMessageRequest(device, GetEventsPullMessageRequest.getInstance(), subscriptionPolicyUrl, timeout, messageLimit);
     }
 
+    /**
+     * 取消消息的订阅
+     * @param device onvif设备
+     * @param subscriptionPolicyUrl 订阅点的url
+     * @return onvif响应
+     */
     public OnvifResponse sendUnsubscribeRequest(OnvifDevice device, String subscriptionPolicyUrl) {
         return this.executor.sendUnsubscribeRequest(device, GetEventsUnsubscribeRequest.getInstance(), subscriptionPolicyUrl);
     }
