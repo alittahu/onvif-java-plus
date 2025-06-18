@@ -41,9 +41,9 @@
 
         <!-- OkHttp Digest -->
         <dependency>
-            <groupId>com.burgstaller</groupId>
+            <groupId>io.github.rburgst</groupId>
             <artifactId>okhttp-digest</artifactId>
-            <version>1.18</version>
+            <version>3.1.1</version>
         </dependency>
 
 
