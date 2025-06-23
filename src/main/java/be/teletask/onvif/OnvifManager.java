@@ -5,10 +5,7 @@
 
 package be.teletask.onvif;
 
-import be.teletask.onvif.listeners.OnvifDeviceInformationListener;
-import be.teletask.onvif.listeners.OnvifMediaStreamURIListener;
-import be.teletask.onvif.listeners.OnvifResponseListener;
-import be.teletask.onvif.listeners.OnvifServicesListener;
+import be.teletask.onvif.listeners.*;
 import be.teletask.onvif.models.OnvifCreatePullPointSubscription;
 import be.teletask.onvif.models.OnvifDevice;
 import be.teletask.onvif.models.OnvifMediaProfile;
@@ -49,6 +46,11 @@ public class OnvifManager implements OnvifResponseListener {
 
     public void getDeviceInformation(OnvifDevice device, OnvifDeviceInformationListener listener) {
         OnvifRequest request = new GetDeviceInformationRequest(listener);
+        this.executor.sendRequest(device, request);
+    }
+
+    public void getDeviceVideoSourceConfiguration(OnvifDevice device, OnvifVideoSourceConfigurationListener listener) {
+        OnvifRequest request = new GetVideoSourceConfigurationsRequest(listener);
         this.executor.sendRequest(device, request);
     }
 

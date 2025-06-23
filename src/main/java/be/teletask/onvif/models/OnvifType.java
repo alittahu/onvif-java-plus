@@ -17,7 +17,8 @@ public enum OnvifType {
     GET_IMAGING_URI("http://www.onvif.org/ver10/imaging/wsdl"),
     GET_PTZ_URI("http://www.onvif.org/ver10/ptz/wsdl"),
     GET_EVENTS_URI("http://www.onvif.org/ver10/events/wsdl"),
-    GET_EVENTS_PULL_MESSAGE_URI("http://www.onvif.org/ver10/events/wsdl");
+    GET_EVENTS_PULL_MESSAGE_URI("http://www.onvif.org/ver10/events/wsdl"),
+    GET_VIDEO_CONFIG("http://www.onvif.org/ver10/media/wsdl");
 
     public final String namespace;
 
