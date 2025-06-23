@@ -4,7 +4,7 @@
 //
 
 package be.teletask.onvif.models;
-// Modified by Boj on 20241103
+// Modified by alittahu on 20250623
 // This file includes modifications based on the original project ONVIF-java.
 public enum OnvifType {
     CUSTOM(""),
@@ -18,7 +18,9 @@ public enum OnvifType {
     GET_PTZ_URI("http://www.onvif.org/ver10/ptz/wsdl"),
     GET_EVENTS_URI("http://www.onvif.org/ver10/events/wsdl"),
     GET_EVENTS_PULL_MESSAGE_URI("http://www.onvif.org/ver10/events/wsdl"),
-    GET_VIDEO_CONFIG("http://www.onvif.org/ver10/media/wsdl");
+    GET_VIDEO_CONFIG("http://www.onvif.org/ver10/media/wsdl"),
+    GET_PTZ_STATUS("http://www.onvif.org/ver10/ptz/wsdl"),
+    PTZ_ABSOLUTE_MOVE("http://www.onvif.org/ver10/ptz/wsdl");
 
     public final String namespace;
 
