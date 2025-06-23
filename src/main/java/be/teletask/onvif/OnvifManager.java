@@ -63,6 +63,11 @@ public class OnvifManager implements OnvifResponseListener {
         this.executor.sendRequest(device, request);
     }
 
+    public void getStatus(OnvifDevice device, String profileToken, OnvifPTZStatusListener listener) {
+        GetStatusRequest request = new GetStatusRequest(profileToken, listener);
+        this.executor.sendRequest(device, request);
+    }
+
 
     public void sendOnvifRequest(OnvifDevice device, OnvifRequest request) {
         this.executor.sendRequest(device, request);
@@ -81,6 +86,11 @@ public class OnvifManager implements OnvifResponseListener {
         this.executor.sendMoveRequestAndBody(device, GetPTZContinuousMoveRequest.getInstance(), profileToken, panSpeed, tiltSpeed, zoomSpeed);
     }
 
+    public void sendAbsoluteMoveRequest(OnvifDevice device, String profileToken, double pan, double tilt, double zoom) {
+        AbsoluteMoveRequest request = new AbsoluteMoveRequest(profileToken, pan, tilt, zoom);
+        this.executor.sendRequest(device, request);
+    }
+
     /**
      * 云台停止
      *
@@ -95,8 +105,9 @@ public class OnvifManager implements OnvifResponseListener {
 
     /**
      * 发送创建拉取点订阅
-     * @param device onvif设备
-     * @param request 请求
+     *
+     * @param device           onvif设备
+     * @param request          请求
      * @param filterExpression 指定订阅的topic
      * @return 拉取点类包含拉取点的相关对象
      * @throws Exception 异常抛出给调用方
@@ -136,10 +147,11 @@ public class OnvifManager implements OnvifResponseListener {
 
     /**
      * 发送拉取消息的请求
-     * @param device onvif设备类
+     *
+     * @param device                onvif设备类
      * @param subscriptionPolicyUrl 订阅点的url
-     * @param timeout 指定时间内的消息
-     * @param messageLimit 拉取消息得到条数
+     * @param timeout               指定时间内的消息
+     * @param messageLimit          拉取消息得到条数
      */
     public void sendPullMessageRequest(OnvifDevice device, String subscriptionPolicyUrl, String timeout, int messageLimit) {
         this.executor.sendPullMessageRequest(device, GetEventsPullMessageRequest.getInstance(), subscriptionPolicyUrl, timeout, messageLimit);
@@ -147,7 +159,8 @@ public class OnvifManager implements OnvifResponseListener {
 
     /**
      * 取消消息的订阅
-     * @param device onvif设备
+     *
+     * @param device                onvif设备
      * @param subscriptionPolicyUrl 订阅点的url
      * @return onvif响应
      */

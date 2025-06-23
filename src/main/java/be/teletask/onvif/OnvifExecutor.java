@@ -8,11 +8,9 @@ package be.teletask.onvif;
 import be.teletask.onvif.listeners.OnvifResponseListener;
 import be.teletask.onvif.models.OnvifDevice;
 import be.teletask.onvif.models.OnvifMediaProfile;
+import be.teletask.onvif.models.OnvifPTZStatus;
 import be.teletask.onvif.models.OnvifServices;
-import be.teletask.onvif.parsers.GetDeviceInformationParser;
-import be.teletask.onvif.parsers.GetMediaStreamParser;
-import be.teletask.onvif.parsers.GetServicesParser;
-import be.teletask.onvif.parsers.GetVideoSourceConfigurationsParser;
+import be.teletask.onvif.parsers.*;
 import be.teletask.onvif.requests.*;
 import be.teletask.onvif.responses.OnvifResponse;
 import com.burgstaller.okhttp.AuthenticationCacheInterceptor;
@@ -262,10 +260,17 @@ public class OnvifExecutor {
                 GetVideoSourceConfigurationsRequest cfgReq = (GetVideoSourceConfigurationsRequest) response.request();
                 cfgReq.getListener().onVideoSourceConfigurationReceived(device, new GetVideoSourceConfigurationsParser().parse(response));
                 break;
+            case GET_PTZ_STATUS:
+                GetStatusRequest gs = (GetStatusRequest) response.request();
+                OnvifPTZStatus status = new GetStatusParser().parse(response);
+                gs.getListener().onPTZStatus(device, status);
+                break;
+            case PTZ_ABSOLUTE_MOVE:
+                onvifResponseListener.onResponse(device, response);
+                break;
             default:
                 this.onvifResponseListener.onResponse(device, response);
         }
-
     }
 
     private Request buildOnvifRequest(OnvifDevice device, OnvifRequest request) {
@@ -290,6 +295,7 @@ public class OnvifExecutor {
             case GET_PTZ_URI -> "/onvif/ptz_service";
             case GET_IMAGING_URI -> "/onvif/imaging_service";
             case GET_EVENTS_URI -> "/onvif/Events";
+            case GET_PTZ_STATUS, PTZ_ABSOLUTE_MOVE -> device.getPath().getPTZPath();
             default -> device.getPath().getServicesPath();
         };
     }
