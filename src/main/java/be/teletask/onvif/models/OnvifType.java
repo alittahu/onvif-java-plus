@@ -20,7 +20,8 @@ public enum OnvifType {
     GET_EVENTS_PULL_MESSAGE_URI("http://www.onvif.org/ver10/events/wsdl"),
     GET_VIDEO_CONFIG("http://www.onvif.org/ver10/media/wsdl"),
     GET_PTZ_STATUS("http://www.onvif.org/ver20/ptz/wsdl"),
-    PTZ_ABSOLUTE_MOVE("http://www.onvif.org/ver10/ptz/wsdl");
+    PTZ_ABSOLUTE_MOVE("http://www.onvif.org/ver10/ptz/wsdl"),
+    GET_CONFIGURATIONS("http://www.onvif.org/ver20/ptz/wsdl");
 
     public final String namespace;
 

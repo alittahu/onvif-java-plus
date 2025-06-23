@@ -68,6 +68,11 @@ public class OnvifManager implements OnvifResponseListener {
         this.executor.sendRequest(device, request);
     }
 
+    public void getConfigurations(OnvifDevice device, OnvifConfigurationsListener listener) {
+        OnvifRequest request = new GetConfigurationsRequest(listener);
+        executor.sendRequest(device, request);
+    }
+
     public void sendOnvifRequest(OnvifDevice device, OnvifRequest request) {
         this.executor.sendRequest(device, request);
     }

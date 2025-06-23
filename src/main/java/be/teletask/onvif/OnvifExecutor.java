@@ -268,6 +268,10 @@ public class OnvifExecutor {
             case PTZ_ABSOLUTE_MOVE:
                 onvifResponseListener.onResponse(device, response);
                 break;
+            case GET_CONFIGURATIONS:
+                ((GetConfigurationsRequest) response.request()).getListener().onConfigurationsReceived(device,
+                        new GetConfigurationsParser().parse(response));
+                break;
             default:
                 this.onvifResponseListener.onResponse(device, response);
         }
@@ -295,7 +299,7 @@ public class OnvifExecutor {
             case GET_PTZ_URI -> "/onvif/ptz_service";
             case GET_IMAGING_URI -> "/onvif/imaging_service";
             case GET_EVENTS_URI -> "/onvif/Events";
-            case GET_PTZ_STATUS, PTZ_ABSOLUTE_MOVE -> device.getPath().getPTZPath();
+            case GET_PTZ_STATUS, PTZ_ABSOLUTE_MOVE, GET_CONFIGURATIONS -> device.getPath().getPTZPath();
             default -> device.getPath().getServicesPath();
         };
     }
