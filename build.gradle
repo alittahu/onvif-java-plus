@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group = 'be.teletask.onvif'
+version = '1.0.4'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // your test framework
+    testImplementation 'junit:junit:4.13.1'
+
+    // annotations
+    implementation 'org.jetbrains:annotations:15.0'
+
+    // XML parser
+    implementation 'net.sf.kxml:kxml2:2.3.0'
+
+    // Okio (override/vetted)
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+
+    // OkHttp Digest plugin
+    implementation 'io.github.rburgst:okhttp-digest:3.1.1'
+}

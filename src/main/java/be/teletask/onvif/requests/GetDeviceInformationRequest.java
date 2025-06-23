@@ -23,7 +23,6 @@ public class GetDeviceInformationRequest implements OnvifRequest {
     }
 
     //Properties
-
     public OnvifDeviceInformationListener getListener() {
         return listener;
     }
