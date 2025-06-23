@@ -21,7 +21,8 @@ public enum OnvifType {
     GET_VIDEO_CONFIG("http://www.onvif.org/ver10/media/wsdl"),
     GET_PTZ_STATUS("http://www.onvif.org/ver20/ptz/wsdl"),
     PTZ_ABSOLUTE_MOVE("http://www.onvif.org/ver10/ptz/wsdl"),
-    GET_CONFIGURATIONS("http://www.onvif.org/ver20/ptz/wsdl");
+    GET_CONFIGURATIONS("http://www.onvif.org/ver20/ptz/wsdl"),
+    GOTO_HOME_POSITION("http://www.onvif.org/ver20/ptz/wsdl");
 
     public final String namespace;
 
