@@ -18,9 +18,9 @@ public class GetStatusRequest implements OnvifRequest {
 
     @Override
     public String getXml() {
-        return "<GetStatus xmlns=\"http://www.onvif.org/ver10/ptz/wsdl\">"
-                + "<ProfileToken>" + token + "</ProfileToken>"
-                + "</GetStatus>";
+        return "<GetStatus xmlns=\"http://www.onvif.org/ver20/ptz/wsdl\">" +
+                "<ProfileToken>" + token + "</ProfileToken>" +
+                "</GetStatus>";
     }
 
     @Override
