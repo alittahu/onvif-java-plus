@@ -1,21 +1,132 @@
-# ONVIF-Java
----
-[ ![Download](https://api.bintray.com/packages/tomasverhelst/ONVIF-Java/ONVIF-Java/images/download.svg) ](https://bintray.com/tomasverhelst/ONVIF-Java/ONVIF-Java/_latestVersion)
+# onvif-java-plus
 
-<p align="center"> 
-<img src="https://botw-pd.s3.amazonaws.com/styles/logo-thumbnail/s3/112012/onvif-converted.png?itok=yqR6_a6G">
+[![Latest Release](https://img.shields.io/github/v/release/alittahu/onvif-java-plus)](https://github.com/alittahu/onvif-java-plus/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+<p align="center">
+  <img src="https://botw-pd.s3.amazonaws.com/styles/logo-thumbnail/s3/112012/onvif-converted.png?itok=yqR6_a6G" alt="ONVIF logo">
 </p>
 
-ONVIF is an open industry forum that provides and promotes standardized interfaces for effective interoperability of IP-based physical security products. ONVIF was created to make a standard way of how IP products within CCTV and other security areas can communicate with each other.
+**onvif-java-plus** is a fork of the original [ONVIF-Java](https://github.com/RootSoft/ONVIF-Java) library, adapted for personal use and extended with features such as PTZ control, event handling, and replay.
 
-
-
-
- 描述
 ---
-**本项目是基于ONVIF-Java(https://github.com/RootSoft/ONVIF-Java)的个人使用特化**,由于原开源项目现已归档,其中存在例如回放、云台、事件等ONVIF所支持而项目无法做到的功能,加上gradle的作为构建工具
-较为难使用，因此本项目在原来基础上改成了Maven项目更符合现在Java项目的使用，使其更加易用，同时增加了一些新的功能，例如回放、云台、事件等
 
-Description
----
-T**his project is based on ONVIF-Java (https://github.com/RootSoft/ONVIF-Java) for personal use.** Since the original open source project has been archived, there are functions such as playback, PTZ, events, etc. that ONVIF supports but the project cannot do. In addition, gradle is difficult to use as a build tool. Therefore, this project has been changed to a Maven project based on the original one, which is more suitable for the use of current Java projects, making it easier to use. At the same time, some new functions have been added, such as playback, PTZ, events, etc.
+## Table of Contents
+
+- [Features](#features)
+- [Getting Started](#getting-started)
+    - [Using Maven Central](#using-maven-central)
+    - [Using JitPack](#using-jitpack)
+    - [Gradle Setup](#gradle-setup)
+- [Quick Start](#quick-start)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+- Discover and manage ONVIF devices
+- Fetch media profiles and stream URIs
+- PTZ (pan-tilt-zoom) continuous move and stop commands
+- Pull-Point event subscriptions and message retrieval
+- Replay and recording support
+- Automatic video source configuration parsing (rotation, mirror, flip)
+
+## Getting Started
+
+### Using Maven Central
+
+If you prefer to pull from Maven Central (when published, so its the original library with different interface), add:
+
+```xml
+<dependency>
+  <groupId>be.teletask.onvif</groupId>
+  <artifactId>onvif-java-plus</artifactId>
+  <version>1.0.11</version>
+</dependency>
+```
+
+### Using JitPack
+
+Add JitPack as a repository and then include the dependency by Git tag or commit SHA.
+
+```xml
+<repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+
+<dependency>
+  <groupId>com.github.alittahu</groupId>
+  <artifactId>onvif-java-plus</artifactId>
+  <version>v1.0.11</version> <!-- or master-SNAPSHOT -->
+</dependency>
+```
+
+### Gradle Setup
+
+#### Groovy DSL (`build.gradle`)
+
+```groovy
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.alittahu:onvif-java-plus:v1.0.11'
+}
+```
+
+#### Kotlin DSL (`build.gradle.kts`)
+
+```kotlin
+tools {
+    java
+}
+
+repositories {
+    mavenCentral()
+    maven("https://jitpack.io")
+}
+
+dependencies {
+    implementation("com.github.alittahu:onvif-java-plus:v1.0.11")
+}
+```
+
+## Quick Start
+
+```java
+import be.teletask.onvif.OnvifManager;
+import be.teletask.onvif.models.OnvifDevice;
+
+public class Example {
+  public static void main(String[] args) throws Exception {
+    OnvifDevice cam = new OnvifDevice(
+      "192.168.1.100:80",
+      "username",
+      "password"
+    );
+
+    OnvifManager onvif = new OnvifManager();
+    onvif.getServices(cam, (device, services) -> {
+      // servicesPath, deviceInfoPath, etc. are now configured
+      System.out.println("Services loaded: " + services.getServicesPath());
+    });
+  }
+}
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/XYZ`)
+3. Commit your changes (`git commit -m 'Add XYZ'`)
+4. Push to the branch (`git push origin feature/XYZ`)
+5. Open a Pull Request
+
+Please ensure all tests pass and adhere to the existing code style.
+
