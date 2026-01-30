@@ -272,6 +272,13 @@ public class OnvifExecutor {
                 ((GetConfigurationsRequest) response.request()).getListener().onConfigurationsReceived(device,
                         new GetConfigurationsParser().parse(response));
                 break;
+            case GET_PRESETS:
+                GetPresetsRequest gp = (GetPresetsRequest) response.request();
+                gp.getListener().onPresetsReceived(device, new be.teletask.onvif.parsers.GetPresetsParser().parse(response));
+                break;
+            case GOTO_PRESET:
+                onvifResponseListener.onResponse(device, response);
+                break;
             default:
                 this.onvifResponseListener.onResponse(device, response);
         }
@@ -299,7 +306,7 @@ public class OnvifExecutor {
             case GET_PTZ_URI -> "/onvif/ptz_service";
             case GET_IMAGING_URI -> "/onvif/imaging_service";
             case GET_EVENTS_URI -> "/onvif/Events";
-            case GET_PTZ_STATUS, PTZ_ABSOLUTE_MOVE, GET_CONFIGURATIONS, GOTO_HOME_POSITION -> device.getPath().getPTZPath();
+            case GET_PTZ_STATUS, PTZ_ABSOLUTE_MOVE, GET_CONFIGURATIONS, GOTO_HOME_POSITION, GET_PRESETS, GOTO_PRESET -> device.getPath().getPTZPath();
             default -> device.getPath().getServicesPath();
         };
     }

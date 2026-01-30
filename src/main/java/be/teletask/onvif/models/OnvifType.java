@@ -22,7 +22,9 @@ public enum OnvifType {
     GET_PTZ_STATUS("http://www.onvif.org/ver20/ptz/wsdl"),
     PTZ_ABSOLUTE_MOVE("http://www.onvif.org/ver10/ptz/wsdl"),
     GET_CONFIGURATIONS("http://www.onvif.org/ver20/ptz/wsdl"),
-    GOTO_HOME_POSITION("http://www.onvif.org/ver20/ptz/wsdl");
+    GOTO_HOME_POSITION("http://www.onvif.org/ver20/ptz/wsdl"),
+    GET_PRESETS("http://www.onvif.org/ver20/ptz/wsdl"),
+    GOTO_PRESET("http://www.onvif.org/ver20/ptz/wsdl");
 
     public final String namespace;
 

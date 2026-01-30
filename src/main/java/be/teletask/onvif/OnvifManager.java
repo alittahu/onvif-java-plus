@@ -82,6 +82,16 @@ public class OnvifManager implements OnvifResponseListener {
         this.executor.sendRequest(device, request);
     }
 
+    public void getPresets(OnvifDevice device, String profileToken, OnvifPTZPresetsListener listener) {
+        OnvifRequest request = new GetPresetsRequest(profileToken, listener);
+        this.executor.sendRequest(device, request);
+    }
+
+    public void gotoPreset(OnvifDevice device, String profileToken, String presetToken) {
+        OnvifRequest request = new GotoPresetRequest(profileToken, presetToken);
+        this.executor.sendRequest(device, request);
+    }
+
     /**
      * 云台持续运动
      *
